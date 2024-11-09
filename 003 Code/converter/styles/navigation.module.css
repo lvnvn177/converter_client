@@ -1,0 +1,10 @@
+.nav {
+    display: flex;
+    justify-content: space-between;
+    
+
+}
+
+.link {
+    text-decoration: none;
+}
