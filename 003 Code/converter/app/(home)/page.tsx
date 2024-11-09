@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import FileUploaderDrag from "../../components/FileUpload_drop";
 import styles from "../../styles/component.module.css";
 
@@ -8,9 +8,10 @@ export const metadata = {
 
 export default function HomePage() {
     return (
-        
-        <div className={styles.container}> 
-            <FileUploaderDrag></FileUploaderDrag>  
-        </div>
+        <Suspense fallback={<div>Loading...</div>}>
+            <div className={styles.container}> 
+                <FileUploaderDrag />
+            </div>
+        </Suspense>
     );
 }
