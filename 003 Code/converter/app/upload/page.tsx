@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { Suspense,useState, useEffect, useRef } from 'react';
 import { useSearchParams } from "next/navigation";
 //import { FC } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -32,10 +32,13 @@ export default function UploadPage() {
     const [scrollEventBlocked, setScrollEventBlocked] = useState(false);
 
 
-    const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
-    const imageurl = searchParams.get("image_url");
+    // const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
+    // const imageurl = searchParams.get("image_url");
+    const imageurl = "";
 
     function onDocumentLoadSuccess({ numPages }) { // PDF 로드 시 호출, 총 페이지 수 설정 및 콘솔에 메시지 출력
+      const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
+      const imageurl = searchParams.get("image_url");
         setTotalPages(numPages);
         console.log(`총 페이지 수: ${numPages}`);
     }
@@ -156,173 +159,171 @@ export default function UploadPage() {
 
 
     return (
-      <Suspense>
+      
       <div className={styles.container}>
     
-    {/* 번역 결과 팝업 모달 */}
-    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} translatedText={translatedText} />
-      
-    {/* PDF 뷰어 및 기능 메뉴바를 한 영역에 배치 */}
-    <div className={styles.pdfSection}>
+        {/* 번역 결과 팝업 모달 */}
+        <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} translatedText={translatedText} />
+          
+        {/* PDF 뷰어 및 기능 메뉴바를 한 영역에 배치 */}
+        <div className={styles.pdfSection}>
+    
+          {/* PDF 기능 메뉴바 */}
+          <div className={styles.menuBar}> 
+    
+            {/* 페이지 크기 조절 */}
+            <div className={styles.pagescale}>
+              <button onClick={() => setPageScale(pageScale >= 4 ? 4 : pageScale + 0.1)} style={{ marginRight: '10px' }}>
+                <ZoomIn />
+              </button>
+              <button onClick={() => setPageScale(pageScale <= 0.5 ? 0.5 : pageScale - 0.1)}>
+                <ZoomOut />
+              </button>
+            </div>
+    
+            {/* 페이지 이동 UI */}
+            <div className={styles.pagebutton}>
+              {/* 이전 페이지 버튼 */}
+              <button
+                onClick={() => {
+                  if (pageNumber > 1) {
+                    const newPage = pageNumber - 1;
+                    setPageNumber(newPage);
+                    goToPage(newPage); // 해당 페이지로 스크롤 이동
 
-      {/* PDF 기능 메뉴바 */}
-      <div className={styles.menuBar}> 
-
-        {/* 페이지 크기 조절 */}
-        <div className={styles.pagescale}>
-          <button onClick={() => setPageScale(pageScale >= 4 ? 4 : pageScale + 0.1)} style={{ marginRight: '10px' }}>
-            <ZoomIn />
-          </button>
-          <button onClick={() => setPageScale(pageScale <= 0.5 ? 0.5 : pageScale - 0.1)}>
-            <ZoomOut />
-          </button>
-        </div>
-
-        {/* 페이지 이동 UI */}
-        <div className={styles.pagebutton}>
-          {/* 이전 페이지 버튼 */}
-          <button
-            onClick={() => {
-              if (pageNumber > 1) {
-                const newPage = pageNumber - 1;
-                setPageNumber(newPage);
-                goToPage(newPage); // 해당 페이지로 스크롤 이동
-
-              }
-            }}
-            disabled={pageNumber <= 1}
-            className={styles.beforemenuButton}
-          >
-            <ChevronUp />
-          </button>
-          <input
-                type="text"
-                value={pageNumber || ''}
-                onChange={e => {
-                const v = e.target.value;
-                if (v === '') {
-                    setPageNumber(1);
-                 } else {
-                    const numValue = parseInt(v, 10);
-                  if (!isNaN(numValue) && numValue >= 1 && numValue <= totalPages) {
-                    setPageNumber(numValue);
-                    goToPage(numValue); // 입력한 페이지로 스크롤 이동
                   }
-                }
-             }}
-            min={1}
-            max={totalPages}
-            className={styles.pageInput}
-          />
+                }}
+                disabled={pageNumber <= 1}
+                className={styles.beforemenuButton}
+              >
+                <ChevronUp />
+              </button>
+              <input
+                    type="text"
+                    value={pageNumber || ''}
+                    onChange={e => {
+                    const v = e.target.value;
+                    if (v === '') {
+                        setPageNumber(1);
+                     } else {
+                        const numValue = parseInt(v, 10);
+                      if (!isNaN(numValue) && numValue >= 1 && numValue <= totalPages) {
+                        setPageNumber(numValue);
+                        goToPage(numValue); // 입력한 페이지로 스크롤 이동
+                      }
+                    }
+                 }}
+                min={1}
+                max={totalPages}
+                className={styles.pageInput}
+              />
+    
+              {/* 다음 페이지 버튼 */}
+              <button
+                onClick={() => {
+                  if (pageNumber < totalPages) {
+                    const newPage = pageNumber + 1;
+                    setPageNumber(newPage);
+                    goToPage(newPage);
+                  }
+                }}
+                disabled={pageNumber >= totalPages}
+                className={styles.aftermenuButton}
+              >
+                <ChevronDown />
+              </button>
+            </div>
+          </div>
+          
+          {/* PDF 뷰어 창 */}
+        
+          <div
+              className={styles.pdfViewer}
+              ref={scroll} // 스크롤 요소에 대한 참조 추가
+              onScroll={(e) => {
+                const target = e.target as HTMLDivElement; // e.target을 HTMLDivElement로 명시적으로 캐스팅
+                const scrollTop = target.scrollTop; // 스크롤의 상단 위치
+                const scrollHeight = target.scrollHeight; // 전체 스크롤 가능한 높이
+                const pageHeight = scrollHeight / totalPages; // 각 페이지의 높이 계산
 
-          {/* 다음 페이지 버튼 */}
+
+                // 페이지 번호 계산
+                let currentPage = Math.ceil(scrollTop / pageHeight);
+
+                // currentPage가 totalPages를 초과하지 않도록 제한
+                currentPage = Math.min(currentPage, totalPages - 1);
+
+                // 페이지 번호 업데이트
+                setPageNumber(currentPage + 1); 
+              }}
+            >
+            <Document file={imageurl} onLoadSuccess={onDocumentLoadSuccess}>
+          {Array.from(new Array(totalPages), (el, index) => (
+            <Page key={`page_${index + 1}`} pageNumber={index + 1} scale={pageScale} />
+          ))}
+        </Document>
+          </div>
+    
+        </div>
+    
+        {/* 채팅 영역 */}
+        <div className={styles.chatSection}>
+          
+        <div className={styles.historySection}>
+          {qaHistory.map((qa, index) => (
+            <div key={index} className={styles.messageContainer}>
+            {/* 사용자 질문 */}
+            <div className={`${styles.qaBubble} ${styles.qaQuestion}`}>
+              <div className={styles.messageRow}>
+                <User className={styles.usericon} />
+                <div className={styles.messageContent}>
+                  {qa.question}
+                </div>
+              </div>
+            </div>
+
+            {/* 항상 Bot 아이콘 표시 */}
+            <div className={`${styles.qaBubble} ${styles.qaAnswer}`}>
+              <div className={styles.messageRow}>
+                <Bot className={styles.boticon} />
+                <div className={styles.messageContent}>
+                  {/* 로딩 중일 때는 ChatLoader, 응답이 있으면 답변 표시 */}
+                  {qa.answer !== null ? (
+                    qa.answer
+                  ) : (
+                    <ChatLoader size="32px" color="blue" />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+    
+          </div>
+    
+          {/* 질문 입력 및 제출 버튼 */}
+          <form 
+            onSubmit={handleSubmit} 
+            className={styles.form}
+          >
+            <input 
+              type='text'
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder='Enter your question'
+              className={styles.input}
+            />
           <button
-            onClick={() => {
-              if (pageNumber < totalPages) {
-                const newPage = pageNumber + 1;
-                setPageNumber(newPage);
-                goToPage(newPage);
-              }
-            }}
-            disabled={pageNumber >= totalPages}
-            className={styles.aftermenuButton}
-          >
-            <ChevronDown />
-          </button>
+              className={`${styles.submitButton} ${
+                question.trim() ? styles.submitButtonEnabled : styles.submitButtonDisabled
+                }`}
+                type="submit"
+                disabled={!question.trim()}
+              >
+              <Send className='size-4' />
+            </button>
+          </form>
         </div>
       </div>
-      
-      {/* PDF 뷰어 창 */}
-      <div
-          className={styles.pdfViewer}
-          ref={scroll} // 스크롤 요소에 대한 참조 추가
-          onScroll={(e) => {
-            const target = e.target as HTMLDivElement; // e.target을 HTMLDivElement로 명시적으로 캐스팅
-            const scrollTop = target.scrollTop; // 스크롤의 상단 위치
-            const scrollHeight = target.scrollHeight; // 전체 스크롤 가능한 높이
-            const pageHeight = scrollHeight / totalPages; // 각 페이지의 높이 계산
-
-
-            // 페이지 번호 계산
-            let currentPage = Math.ceil(scrollTop / pageHeight);
-
-            // currentPage가 totalPages를 초과하지 않도록 제한
-            currentPage = Math.min(currentPage, totalPages - 1);
-
-            // 페이지 번호 업데이트
-            setPageNumber(currentPage + 1); 
-          }}
-        >
-        <Document file={imageurl} onLoadSuccess={onDocumentLoadSuccess}>
-      {Array.from(new Array(totalPages), (el, index) => (
-        <Page key={`page_${index + 1}`} pageNumber={index + 1} scale={pageScale} />
-      ))}
-    </Document>
-      </div>
-
-    </div>
-
-    {/* 채팅 영역 */}
-    <div className={styles.chatSection}>
-      
-    <div className={styles.historySection}>
-      {qaHistory.map((qa, index) => (
-        <div key={index} className={styles.messageContainer}>
-        {/* 사용자 질문 */}
-        <div className={`${styles.qaBubble} ${styles.qaQuestion}`}>
-          <div className={styles.messageRow}>
-            <User className={styles.usericon} />
-            <div className={styles.messageContent}>
-              {qa.question}
-            </div>
-          </div>
-        </div>
-
-        {/* 항상 Bot 아이콘 표시 */}
-        <div className={`${styles.qaBubble} ${styles.qaAnswer}`}>
-          <div className={styles.messageRow}>
-            <Bot className={styles.boticon} />
-            <div className={styles.messageContent}>
-              {/* 로딩 중일 때는 ChatLoader, 응답이 있으면 답변 표시 */}
-              {qa.answer !== null ? (
-                qa.answer
-              ) : (
-                <ChatLoader size="32px" color="blue" />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    ))}
-
-      </div>
-
-      {/* 질문 입력 및 제출 버튼 */}
-      <form 
-        onSubmit={handleSubmit} 
-        className={styles.form}
-      >
-        <input 
-          type='text'
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder='Enter your question'
-          className={styles.input}
-        />
-      <button
-          className={`${styles.submitButton} ${
-            question.trim() ? styles.submitButtonEnabled : styles.submitButtonDisabled
-            }`}
-            type="submit"
-            disabled={!question.trim()}
-          >
-          <Send className='size-4' />
-        </button>
-      </form>
-    </div>
-  </div>
-
-      </Suspense>
-
     );
 }
