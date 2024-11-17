@@ -32,11 +32,13 @@ export default function UploadPage() {
     const [scrollEventBlocked, setScrollEventBlocked] = useState(false);
 
 
-    const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
-    const imageurl = searchParams.get("image_url");
-    // const imageurl = "";
+    // const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
+    // const imageurl = searchParams.get("image_url");
+     const imageurl = "";
 
     function onDocumentLoadSuccess({ numPages }) { // PDF 로드 시 호출, 총 페이지 수 설정 및 콘솔에 메시지 출력
+      const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
+      const imageurl = searchParams.get("image_url");
         setTotalPages(numPages);
         console.log(`총 페이지 수: ${numPages}`);
     }
