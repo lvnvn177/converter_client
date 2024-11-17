@@ -30,7 +30,7 @@ export default function UploadPage() {
     const [isModalOpen, setIsModalOpen] = useState(false); // Modal 창 열림 상태
     const scroll = useRef(null); // PDF 뷰어 영역에 대한 참조
     const [scrollEventBlocked, setScrollEventBlocked] = useState(false);
-    const searchParams = useSearchParams();
+   
     const [imageurl, setImageurl] = useState<string | null>(null);
 
 
@@ -46,7 +46,7 @@ export default function UploadPage() {
 
       // 페이지가 변경될 때마다 콘솔에 메시지를 출력
       useEffect(() => {
-    
+        const searchParams = new URLSearchParams(window.location.search);
         const urlParam = searchParams.get("imageurl");
         setImageurl(urlParam);
         console.log(`현재 페이지: ${pageNumber}`);
