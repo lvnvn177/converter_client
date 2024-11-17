@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { Suspense,useState, useEffect, useRef } from 'react';
 import { useSearchParams } from "next/navigation";
 //import { FC } from "react";
@@ -30,21 +30,25 @@ export default function UploadPage() {
     const [isModalOpen, setIsModalOpen] = useState(false); // Modal 창 열림 상태
     const scroll = useRef(null); // PDF 뷰어 영역에 대한 참조
     const [scrollEventBlocked, setScrollEventBlocked] = useState(false);
+    const searchParams = useSearchParams();
+    const [imageurl, setImageurl] = useState<string | null>(null);
 
 
-    // const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
+    //= const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
     // const imageurl = searchParams.get("image_url");
-     const imageurl = "";
+     
 
     function onDocumentLoadSuccess({ numPages }) { // PDF 로드 시 호출, 총 페이지 수 설정 및 콘솔에 메시지 출력
-      const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
-      const imageurl = searchParams.get("image_url");
+      
         setTotalPages(numPages);
         console.log(`총 페이지 수: ${numPages}`);
     }
 
       // 페이지가 변경될 때마다 콘솔에 메시지를 출력
       useEffect(() => {
+    
+        const urlParam = searchParams.get("imageurl");
+        setImageurl(urlParam);
         console.log(`현재 페이지: ${pageNumber}`);
       }, [pageNumber]); // pageNumber가 변경될 때마다 실행
 
