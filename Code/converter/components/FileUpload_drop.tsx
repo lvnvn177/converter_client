@@ -17,11 +17,13 @@ export default function FileUploaderDrag() {
   const [files, setFiles] = useState<FileData[]>([]); // 파일 상태
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-
+  const apiServer = process.env.NEXT_PUBLIC_API_SERVER;
+  console.log("api test")
+  console.log(apiServer)
   // 파일 목록을 가져오는 함수
   const fetchFiles = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:2000/s3r/list");
+      const response = await fetch(`${apiServer}/s3r/list`); 
       if (!response.ok) {
         throw new Error("Failed to fetch file list");
       }
@@ -69,7 +71,7 @@ export default function FileUploaderDrag() {
         try {   
             setLoading(true);  //로딩 시작
             
-            fetch('http://127.0.0.1:2000/s3r/upload', {
+            fetch(`${apiServer}/s3r/upload`, {
                 method: 'POST',
                 body: formData,
             })
@@ -84,7 +86,8 @@ export default function FileUploaderDrag() {
                     console.log('첫 요청 데이터: ', data);
 
                     const fileUrl: {url: string} = data.url;
-                    return fetch('http://127.0.0.1:2000/localQna/upload', {
+                    
+                    return fetch(`${apiServer}/localQna/upload`, {
                         method: 'POST',
                         headers: {
                             "Access-Control-Allow-Headers": "*",
@@ -123,7 +126,7 @@ export default function FileUploaderDrag() {
 
     const fetchRecentFiles = async () => {
         try {
-            const res = await fetch("http://127.0.0.1:2000/s3r/list");
+            const res = await fetch(`${apiServer}/s3r/list`);
             if (res.ok) {
                 const data = await res.json();
                 console.log(data);
@@ -143,7 +146,8 @@ export default function FileUploaderDrag() {
 
     const deleteFile = async (fileName) => {
         try {
-            const res = await fetch(`http://127.0.0.1:2000/s3r/delete?fileName=${fileName}`, {
+         
+            const res = await fetch(`${apiServer}/s3r/delete?fileName=${fileName}`, {
                 method: "DELETE",
             });
     
