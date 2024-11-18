@@ -21,9 +21,7 @@ export default function FileUploaderDrag() {
   // 파일 목록을 가져오는 함수
   const fetchFiles = async () => {
     try {
-      // http://127.0.0.1:2000/s3r/list
-      
-      const response = await fetch("http://3.35.18.67/s3r/list");
+      const response = await fetch("http://127.0.0.1:2000/s3r/list");
       if (!response.ok) {
         throw new Error("Failed to fetch file list");
       }
@@ -70,9 +68,8 @@ export default function FileUploaderDrag() {
 
         try {   
             setLoading(true);  //로딩 시작
-            // http://127.0.0.1:2000/s3r/upload
-           
-            fetch('http://3.35.18.67/s3r/upload', {
+            
+            fetch('http://127.0.0.1:2000/s3r/upload', {
                 method: 'POST',
                 body: formData,
             })
@@ -87,8 +84,7 @@ export default function FileUploaderDrag() {
                     console.log('첫 요청 데이터: ', data);
 
                     const fileUrl: {url: string} = data.url;
-                    //http://127.0.0.1:2000/localQna/upload
-                    return fetch('http://3.35.18.67/localQna/upload', {
+                    return fetch('http://127.0.0.1:2000/localQna/upload', {
                         method: 'POST',
                         headers: {
                             "Access-Control-Allow-Headers": "*",
@@ -127,13 +123,11 @@ export default function FileUploaderDrag() {
 
     const fetchRecentFiles = async () => {
         try {
-          
-          //http://127.0.0.1:2000/s3r/list
-            const res = await fetch("http://3.35.18.67/s3r/list");
+            const res = await fetch("http://127.0.0.1:2000/s3r/list");
             if (res.ok) {
                 const data = await res.json();
                 console.log(data);
-                // setRecentFiles(data);
+                // setRecentFiles(data); none 
             } else {
                 console.error("Failed to fetch recent files");
             }
@@ -149,9 +143,7 @@ export default function FileUploaderDrag() {
 
     const deleteFile = async (fileName) => {
         try {
-          
-          //http://127.0.0.1:2000/s3r/delete?fileName=${fileName}
-            const res = await fetch(`http://3.35.18.67/s3r/delete?fileName=${fileName}`, {
+            const res = await fetch(`http://127.0.0.1:2000/s3r/delete?fileName=${fileName}`, {
                 method: "DELETE",
             });
     

@@ -1,5 +1,5 @@
-'use client';
-import React, { Suspense,useState, useEffect, useRef } from 'react';
+'use client'
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from "next/navigation";
 //import { FC } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -30,25 +30,18 @@ export default function UploadPage() {
     const [isModalOpen, setIsModalOpen] = useState(false); // Modal 창 열림 상태
     const scroll = useRef(null); // PDF 뷰어 영역에 대한 참조
     const [scrollEventBlocked, setScrollEventBlocked] = useState(false);
-   
-    const [imageurl, setImageurl] = useState<string | null>(null);
 
 
-    //= const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
-    // const imageurl = searchParams.get("image_url");
-     
+    const searchParams = useSearchParams();   // 이전 페이지에서 전달된 PDF 파일의 URL 가져오기
+    const imageurl = searchParams.get("image_url");
 
     function onDocumentLoadSuccess({ numPages }) { // PDF 로드 시 호출, 총 페이지 수 설정 및 콘솔에 메시지 출력
-      
         setTotalPages(numPages);
         console.log(`총 페이지 수: ${numPages}`);
     }
 
       // 페이지가 변경될 때마다 콘솔에 메시지를 출력
       useEffect(() => {
-        const searchParams = new URLSearchParams(window.location.search);
-        const urlParam = searchParams.get("imageurl");
-        setImageurl(urlParam);
         console.log(`현재 페이지: ${pageNumber}`);
       }, [pageNumber]); // pageNumber가 변경될 때마다 실행
 
@@ -84,8 +77,7 @@ export default function UploadPage() {
     const translateText = async (text) => { // 텍스트 번역 요청
         try {
             console.log("Translating text:", text); // 번역 요청 시 로그 출력
-                      // http://127.0.0.1:2000/translate/translateText
-            const response = await fetch('http://3.35.18.67/translate/translateText', { // 번역 API 경로
+            const response = await fetch('http://127.0.0.1:2000/translate/translateText', { // 번역 API 경로
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text }),
@@ -109,9 +101,9 @@ export default function UploadPage() {
       // 사용자의 질문만 기록
       const newQuestion = { question: currentQuestion, answer: null }; // answer는 null로 설정하여 비워둠
       setQaHistory((prevHistory) => [...prevHistory, newQuestion]); // 전에 질의응답 했던 기록 + 질문창만 
-        // http://127.0.0.1:2000/localQna/answer
+  
       try {
-          const response = await fetch('http://3.35.18.67/localQna/answer', {
+          const response = await fetch('http://127.0.0.1:2000/localQna/answer', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -164,7 +156,6 @@ export default function UploadPage() {
 
 
     return (
-      
       <div className={styles.container}>
     
         {/* 번역 결과 팝업 모달 */}
@@ -241,7 +232,6 @@ export default function UploadPage() {
           </div>
           
           {/* PDF 뷰어 창 */}
-        
           <div
               className={styles.pdfViewer}
               ref={scroll} // 스크롤 요소에 대한 참조 추가
