@@ -72,7 +72,7 @@ export default function PDFViewer() {
     const translateText = async (text) => {
         try {
             console.log("Translating text:", text);
-           
+            // http://127.0.0.1:2000
             const response = await fetch(`${apiServer}/translate/translateText`, {
                 method: 'POST',
                 headers: {
