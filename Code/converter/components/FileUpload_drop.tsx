@@ -18,9 +18,7 @@ export default function FileUploaderDrag() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const apiServer = process.env.NEXT_PUBLIC_API_SERVER;
-  console.log("api test")
-  console.log(apiServer)
-  // 파일 목록을 가져오는 함수
+
   const fetchFiles = async () => {
     try {
       const response = await fetch(`${apiServer}/s3r/list`); 

@@ -75,7 +75,14 @@ export default function PDFViewer() {
            
             const response = await fetch(`${apiServer}/translate/translateText`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type, Accept'
+                },
+                credentials: 'include',
                 body: JSON.stringify({ text }),
             });
             const data = await response.json();
@@ -102,7 +109,12 @@ export default function PDFViewer() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type, Accept'
                 },
+                credentials: 'include',
                 body: JSON.stringify({ 
                     query: question,
                 })
