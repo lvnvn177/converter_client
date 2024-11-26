@@ -21,7 +21,7 @@ export default function FileUploaderDrag() {
 
   const fetchFiles = async () => {
     try {
-      const response = await fetch(`${apiServer}/s3r/list`); 
+      const response = await fetch(`http://127.0.0.1:2000/s3r/list`); 
       if (!response.ok) {
         throw new Error("Failed to fetch file list");
       }
@@ -69,7 +69,7 @@ export default function FileUploaderDrag() {
         try {   
             setLoading(true);  //로딩 시작
             
-            fetch(`${apiServer}/s3r/upload`, {
+            fetch(`http://127.0.0.1:2000/s3r/upload`, {
                 method: 'POST',
                 body: formData,
             })
@@ -85,7 +85,7 @@ export default function FileUploaderDrag() {
 
                     const fileUrl: {url: string} = data.url;
                     
-                    return fetch(`${apiServer}/localQna/upload`, {
+                    return fetch(`http://127.0.0.1:2000/localQna/upload`, {
                         method: 'POST',
                         headers: {
                             "Access-Control-Allow-Headers": "*",
@@ -124,7 +124,7 @@ export default function FileUploaderDrag() {
 
     const fetchRecentFiles = async () => {
         try {
-            const res = await fetch(`${apiServer}/s3r/list`);
+            const res = await fetch(`http://127.0.0.1:2000/s3r/list`);
             if (res.ok) {
                 const data = await res.json();
                 console.log(data);
@@ -145,7 +145,7 @@ export default function FileUploaderDrag() {
     const deleteFile = async (fileName) => {
         try {
          
-            const res = await fetch(`${apiServer}/s3r/delete?fileName=${fileName}`, {
+            const res = await fetch(`http://127.0.0.1:2000/s3r/delete?fileName=${fileName}`, {
                 method: "DELETE",
             });
     
