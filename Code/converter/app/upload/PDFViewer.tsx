@@ -73,6 +73,7 @@ export default function PDFViewer() {
         try {
             console.log("Translating text:", text);
             // http://127.0.0.1:2000
+            // ${apiServer}
             const response = await fetch(`${apiServer}/translate/translateText`, {
                 method: 'POST',
                 headers: {
@@ -105,14 +106,12 @@ export default function PDFViewer() {
         setQaHistory((prevHistory) => [...prevHistory, newQuestion]);
         
         try {
+
             const response = await fetch(`${apiServer}/localQna/answer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-                    'Access-Control-Allow-Headers': 'Content-Type, Accept'
+                    'Accept': 'application/json'
                 },
                 credentials: 'include',
                 body: JSON.stringify({ 

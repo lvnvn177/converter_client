@@ -69,6 +69,7 @@ export default function FileUploaderDrag() {
         try {   
             setLoading(true);  //로딩 시작
             //http://127.0.0.1:2000
+            // ${apiServer}
             fetch(`${apiServer}/s3r/upload`, {
                 method: 'POST',
                 body: formData,
