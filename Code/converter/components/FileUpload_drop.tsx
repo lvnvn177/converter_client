@@ -20,7 +20,7 @@ export default function FileUploaderDrag() {
   const apiServer = process.env.NEXT_PUBLIC_API_SERVER;
 
   const fetchFiles = async () => {
-    try {
+    try { //${apiServer} http://127.0.0.1:2000
       const response = await fetch(`${apiServer}/s3r/list`); 
       if (!response.ok) {
         throw new Error("Failed to fetch file list");
@@ -68,7 +68,7 @@ export default function FileUploaderDrag() {
 
         try {   
             setLoading(true);  //로딩 시작
-            
+            //http://127.0.0.1:2000
             fetch(`${apiServer}/s3r/upload`, {
                 method: 'POST',
                 body: formData,
